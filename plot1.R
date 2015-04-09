@@ -1,0 +1,16 @@
+fileName <- "household_power_consumption.txt"
+con <- file(fileName,open="r")
+good1 <- grep("^1/2/2007",readLines(con))
+close(con)
+con <- file(fileName,open="r")
+good2 <- grep("^2/2/2007",readLines(con))
+close(con)
+start <- good1[1]-1
+lasting <- length(good1)+length(good2)
+myColNames <- read.table(fileName,sep=";",nrow=1,colClass="character")
+myData <- read.table(fileName,sep=";",skip=start,nrow=lasting,col.names=myColNames)
+myData$Date_Time <- paste(myData$Date,myData$Time,sep=" ") 
+myData$Date_Time <- strptime(myData$Date_Time,"%d/%m/%Y %H:%M:%S")
+png(filename="plot1.png",width=480,height=480,units="px")
+hist(myData$Global_active_power,col="red",xlab = "Global Active Power(kilowatts)",main="Global Active Power")
+dev.off()
